@@ -1,0 +1,12 @@
+{
+  "name": "ryft-skills",
+  "version": "0.1.0",
+  "description": "AI skills that help anyone turn an idea into a game on Ryft",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "node --test .claude/skills/ryft-password-save/reference/password.test.js && node scripts/build-uploads.js --check",
+    "build": "node scripts/build-uploads.js",
+    "budget": "node .claude/skills/ryft-game-director/scripts/budget.js"
+  }
+}
