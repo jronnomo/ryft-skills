@@ -72,5 +72,6 @@ If the platform uses a screenshot or cover image, pick a moment **mid-action**, 
 
 Suggest the creator:
 - Watch someone play it, or read comments, and log what confuses people
+- Share it: the game's link works anywhere. Make a trailer or a looping preview with `ryft-trailer`, since a short gameplay clip is the best way to get people to click
 - Keep `GAME.md` for an update: the next version starts with `ryft-iterate`
 - If they change the password fields in an update, bump the version and tell players old codes won't work

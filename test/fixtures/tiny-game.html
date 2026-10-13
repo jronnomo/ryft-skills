@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tiny Game</title>
+<style>html,body{margin:0;background:#0b1026;overflow:hidden}canvas{display:block}</style>
+<canvas id="c"></canvas>
+<script>
+  // A minimal stand-in for a Ryft game, used to test the recorder.
+  const c = document.getElementById("c"), g = c.getContext("2d");
+  const keys = {};
+  let started = false, x = 80, y = 0, vy = 0;
+  addEventListener("keydown", (e) => { keys[e.code] = true; if (e.code === "Space") started = true; });
+  addEventListener("keyup", (e) => { keys[e.code] = false; });
+  function frame() {
+    c.width = innerWidth; c.height = innerHeight;
+    const ground = c.height - 80;
+    if (started) {
+      if (keys.ArrowRight) x += 6;
+      if (keys.ArrowLeft) x -= 6;
+      if (keys.Space && y === 0) vy = -14;
+      vy += 0.8; y = Math.min(0, y + vy);
+    }
+    g.fillStyle = "#6b3fa0"; g.fillRect(0, ground, c.width, 80);
+    g.fillStyle = "#ffd84a"; g.fillRect(x, ground - 40 + y, 40, 40);
+    if (!started) { g.fillStyle = "#7dff9a"; g.fillRect(c.width / 2 - 150, 120, 300, 40); }
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>

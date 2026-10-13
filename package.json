@@ -5,8 +5,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "node --test .claude/skills/ryft-password-save/reference/password.test.js && node scripts/build-uploads.js --check",
+    "test": "node --test .claude/skills/ryft-password-save/reference/password.test.js test/footage.test.mjs && node scripts/build-uploads.js --check",
     "build": "node scripts/build-uploads.js",
-    "budget": "node .claude/skills/ryft-game-director/scripts/budget.js"
+    "budget": "node .claude/skills/ryft-game-director/scripts/budget.js",
+    "test:record": "node --test test/record.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
   }
 }

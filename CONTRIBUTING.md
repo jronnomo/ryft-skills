@@ -44,3 +44,10 @@ npm test        # run tests on both versions + check the upload is in sync
 ```
 
 If you change the encoding, existing games' codes will break. Only do that behind a new `version`.
+
+The trailer scripts in `ryft-trailer/scripts/` need ffmpeg. `npm test` covers `footage.mjs`; the recorder needs a browser, so it has its own test:
+
+```bash
+npx playwright install chromium
+npm run test:record
+```

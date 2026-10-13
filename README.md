@@ -23,6 +23,7 @@ Ryft builds 2D browser games from text prompts. That's magic when you know what 
 | [`ryft-level-designer`](.claude/skills/ryft-level-designer/SKILL.md) | The core works and you want more of it | An uploadable **levels.md** with ASCII maps and a difficulty curve |
 | [`ryft-password-save`](.claude/skills/ryft-password-save/SKILL.md) | Players need to come back later | NES-style **continue codes**, no save data needed |
 | [`ryft-publish-ready`](.claude/skills/ryft-publish-ready/SKILL.md) | You think it's done | Stranger-test checklist + **title, description, tags** |
+| [`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) | You want people to see it | **Game trailers**, teasers, preview loops and "made in N prompts" montages, rendered with [/brag](https://github.com/latent-spaces/brag) |
 
 See [`examples/pip-and-the-gloomshrooms`](examples/pip-and-the-gloomshrooms/GAME.md) for a full walk-through from idea to listing, and start your own from [`templates/GAME.md`](templates/GAME.md).
 
@@ -38,6 +39,17 @@ Ryft accepts `.md` and `.png` uploads and generates reusable assets natively, so
 | `fix-*.png` / `good-*.png` | iterate, art-director | Annotated screenshots of what's wrong, and what right looks like |
 | `levels.md` | level-designer | Exact level maps, one or two at a time |
 | `password-save.md` | password-save | The save-code module, ready to upload |
+
+## Trailers that look like game trailers
+
+[`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) directs a video game trailer (cold open on gameplay, escalating cuts on the beat, mood text cards, late title reveal, "Play free on Ryft" end card) and hands the render to [`/brag`](https://github.com/latent-spaces/brag). Brag's defaults are made for product launches, so the skill packs a `trailer-kit/` with a beat-by-beat `TRAILER.md` and a game-flavoured `PRODUCT.md` to steer it.
+
+Two helper scripts, both tested:
+
+- **`footage.mjs`** (ffmpeg): makes a contact sheet to find highlights, cuts a recording into named clips plus stills, and makes looping preview GIFs
+- **`record.mjs`** (Playwright, optional): plays a game from a scripted list of inputs (`press Space`, `hold ArrowRight 1.2`, `snap title`) and records it. Good for title screens, menus, puzzles and per-build screenshots; for action gameplay, a human recording looks better
+
+Formats: 15s vertical teaser, 30–45s gameplay trailer, 6s loop, and "Made in N prompts", which turns the build log into a before/after montage.
 
 ## Password saves, the old-school way
 

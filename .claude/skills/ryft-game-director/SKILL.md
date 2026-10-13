@@ -22,6 +22,7 @@ Ask at most one question to place them, then route:
 | Core game works, needs more content | `ryft-level-designer` | An uploadable **levels.md** with maps |
 | Game is long enough that players need to resume | `ryft-password-save` | A **password/continue-code** system |
 | Game feels done | `ryft-publish-ready` | Pre-publish checklist + **title, description, tags** |
+| Wants a trailer, teaser, preview GIF or "made in N prompts" video | `ryft-trailer` | A **game-style trailer** (rendered with `/brag`) |
 
 If the skill isn't installed, do that step yourself following the same intent.
 

@@ -2,3 +2,7 @@ node_modules/
 .DS_Store
 session-handoffs/
 *.zip
+trailer-kit/
+raw/
+brag-output*/
+test-results/

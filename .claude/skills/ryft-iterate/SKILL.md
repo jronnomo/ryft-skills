@@ -108,7 +108,9 @@ After the build, have them check:
 1. Is the thing fixed/changed?
 2. Did anything that worked before break? Quickly replay start → win → lose.
 
-Then add a line to the change log in `GAME.md`:
+Then add a line to the change log in `GAME.md`, and suggest grabbing **one screenshot of the game after each prompt** (`build-log/07-prompt-7.png`). It takes seconds, and later it becomes the footage for a "made in N prompts" video (`ryft-trailer`).
+
+Change log line:
 
 ```
 Prompt 7: Dash added (Shift / touch). Works. Recharge feels slightly long, revisit later.

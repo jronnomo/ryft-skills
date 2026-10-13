@@ -11,6 +11,8 @@
 - Ryft publishes finished games to the platform for others to play.
 - Games are **2D** and run **in the browser**.
 - Games have **no built-in save data**. Players start fresh each visit.
+- **Game URLs work when shared.** A published game's link opens and plays directly in a browser.
+- Recording games and sharing gameplay footage (trailers, clips, streams, social posts) is allowed.
 - Ryft **generates assets and textures natively** (characters, tiles, backgrounds, items), and those assets can be **reused throughout a game**.
 - Creators can **upload `.md` files and `.png` images** alongside prompts, to:
   - **fix** things, e.g. a screenshot showing a character or feel that's wrong
