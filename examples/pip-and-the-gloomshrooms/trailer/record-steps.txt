@@ -1,0 +1,92 @@
+wait 1.5
+snap title
+click
+wait 0.5
+press Space
+wait 0.3
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+snap run5
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+snap run15
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+snap run25
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+snap run33
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+hold ArrowRight+Space 0.35
+hold ArrowRight 0.55
+wait 5
+snap end

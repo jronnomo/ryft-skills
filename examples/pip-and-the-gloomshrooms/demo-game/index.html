@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pip and the Gloomshrooms (demo)</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05070f; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; object-fit: contain; image-rendering: pixelated; }
+</style>
+</head>
+<body>
+<!--
+  A hand-written stand-in for the example game in ../GAME.md, used to test the
+  ryft-trailer pipeline. It was NOT made on Ryft.
+  Controls: Left/Right or A/D to move, Space/W/Up to jump. Space starts.
+-->
+<canvas id="screen" width="480" height="270"></canvas>
+<script>
+const W = 480, H = 270, GROUND = 232, LEVEL_END = 3560;
+const C = {
+  night: "#0b1026", far: "#141a3a", near: "#1d1a44", ground: "#2a1d4a", groundTop: "#3c2a66",
+  cap: "#6b3fa0", capDark: "#4b2a78", spot: "#e8dcff", stem: "#c9b8e8",
+  spore: "#7dff9a", pip: "#ffd84a", pipBelly: "#fff3b0", gloom: "#3a1f5c", gloomEye: "#ff5d8f", white: "#ffffff",
+};
+const screen = document.getElementById("screen");
+const ctx = screen.getContext("2d");
+const dark = document.createElement("canvas");
+dark.width = W; dark.height = H;
+const dctx = dark.getContext("2d");
+
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+// Level -------------------------------------------------------------------
+const platforms = [];   // mushroom caps: one-way, land from above
+const spores = [];
+const glooms = [];
+const props = [];       // background mushrooms
+for (let x = 260; x < LEVEL_END - 200; x += 170 + rand() * 120) {
+  const h = rand() < 0.5 ? 46 : 74;
+  platforms.push({ x, y: GROUND - h, w: 48 + rand() * 24 });
+}
+for (let x = 180; x < LEVEL_END - 120; x += 95 + rand() * 40) {
+  spores.push({ x, y: GROUND - (rand() < 0.5 ? 18 : 58), got: false, phase: rand() * 6 });
+}
+const gloomAt = [520, 900, 1250, 1600, 1900, 2250, 2420, 2600, 2700, 2820, 2950, 3080, 3200];
+for (const x of gloomAt) glooms.push({ x, home: x, dir: rand() < 0.5 ? -1 : 1, alive: true, squish: 0 });
+for (let x = 0; x < LEVEL_END + 600; x += 40 + rand() * 60) {
+  props.push({ x, h: 30 + rand() * 90, w: 14 + rand() * 30, layer: rand() < 0.5 ? 0.3 : 0.6 });
+}
+const stars = Array.from({ length: 70 }, () => ({ x: rand() * W * 3, y: rand() * 120, t: rand() * 6 }));
+
+// State -------------------------------------------------------------------
+const keys = {};
+let mode = "title", frame = 0, shake = 0, endTimer = 0;
+const pip = { x: 60, y: GROUND - 12, vx: 0, vy: 0, onGround: true, light: 74, hurt: 0, face: 1 };
+let camX = 0, count = 0;
+const particles = [];
+
+addEventListener("keydown", (e) => {
+  keys[e.code] = true;
+  if (e.code === "Space" && mode === "title") mode = "play";
+  if (e.code === "Space" && (mode === "won" || mode === "lost") && endTimer > 300) location.reload();
+  if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
+});
+addEventListener("keyup", (e) => { keys[e.code] = false; });
+
+function burst(x, y, color, n, speed = 1.6) {
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i) / n + rand() * 0.4;
+    particles.push({ x, y, vx: Math.cos(a) * speed * (0.5 + rand()), vy: Math.sin(a) * speed * (0.5 + rand()) - 0.5, life: 30 + rand() * 20, color });
+  }
+}
+
+// Update ------------------------------------------------------------------
+function update() {
+  frame++;
+  if (mode !== "play") { endTimer++; return; }
+  const left = keys.ArrowLeft || keys.KeyA, right = keys.ArrowRight || keys.KeyD;
+  const jump = keys.Space || keys.ArrowUp || keys.KeyW;
+  pip.vx = right ? 2.1 : left ? -2.1 : pip.vx * 0.7;
+  if (right) pip.face = 1; else if (left) pip.face = -1;
+  if (jump && pip.onGround) { pip.vy = -5.4; pip.onGround = false; burst(pip.x + 6, pip.y + 12, C.pipBelly, 5, 0.8); }
+  pip.vy += pip.vy < 0 && jump ? 0.22 : 0.36;
+  const prevBottom = pip.y + 12;
+  pip.x = Math.max(0, pip.x + pip.vx);
+  pip.y += pip.vy;
+  pip.onGround = false;
+  if (pip.y + 12 >= GROUND) { pip.y = GROUND - 12; pip.vy = 0; pip.onGround = true; }
+  for (const p of platforms) {
+    if (pip.vy >= 0 && prevBottom <= p.y && pip.y + 12 >= p.y && pip.x + 10 > p.x && pip.x + 2 < p.x + p.w) {
+      pip.y = p.y - 12; pip.vy = 0; pip.onGround = true;
+    }
+  }
+
+  for (const s of spores) {
+    if (!s.got && Math.hypot(pip.x + 6 - s.x, pip.y + 6 - s.y) < 13) {
+      s.got = true; count++; pip.light = Math.min(118, pip.light + 13); burst(s.x, s.y, C.spore, 14);
+    }
+  }
+
+  for (const g of glooms) {
+    if (!g.alive) { g.squish++; continue; }
+    g.x += g.dir * 0.55;
+    if (Math.abs(g.x - g.home) > 40) g.dir *= -1;
+    const hit = pip.x + 10 > g.x && pip.x + 2 < g.x + 16 && pip.y + 12 > GROUND - 14;
+    if (hit && pip.vy > 0 && prevBottom <= GROUND - 10) {
+      g.alive = false; pip.vy = -4.2; shake = 6; burst(g.x + 8, GROUND - 8, C.cap, 18, 2.2);
+    } else if (hit && pip.hurt === 0) {
+      pip.light *= 0.78; pip.hurt = 50; shake = 10; pip.vy = -3; burst(pip.x + 6, pip.y + 6, C.gloomEye, 12, 2);
+    }
+  }
+  if (pip.hurt > 0) pip.hurt--;
+
+  pip.light -= 0.02;
+  if (pip.light < 12) { mode = "lost"; shake = 14; }
+  if (pip.x > LEVEL_END) { mode = "won"; burst(pip.x + 6, pip.y + 6, C.spore, 60, 3.5); }
+
+  if (frame % 3 === 0) particles.push({ x: pip.x + 6 - pip.face * 5, y: pip.y + 8, vx: -pip.face * 0.3, vy: -0.2, life: 22, color: C.pip });
+  camX += (Math.min(Math.max(0, pip.x - 170), LEVEL_END + 120 - W) - camX) * 0.12;
+}
+
+// Draw --------------------------------------------------------------------
+function mushroom(c, x, y, w, h, cap, stem) {
+  c.fillStyle = stem; c.fillRect(x + w / 2 - 3, y, 6, h);
+  c.fillStyle = cap; c.beginPath(); c.ellipse(x + w / 2, y + 2, w / 2, 10, 0, Math.PI, 0); c.fill();
+}
+
+function drawWorld() {
+  ctx.fillStyle = C.night; ctx.fillRect(0, 0, W, H);
+  for (const s of stars) {
+    const x = ((s.x - camX * 0.1) % (W * 3) + W * 3) % (W * 3);
+    if (x < W) { ctx.fillStyle = (frame + s.t * 20) % 90 < 70 ? "#8890c8" : "#3a4070"; ctx.fillRect(x | 0, s.y | 0, 1, 1); }
+  }
+  for (const p of props) {
+    const x = p.x - camX * p.layer;
+    if (x < -40 || x > W + 40) continue;
+    mushroom(ctx, x, GROUND - p.h, p.w, p.h, p.layer < 0.5 ? C.far : C.near, p.layer < 0.5 ? C.far : C.near);
+  }
+  ctx.save(); ctx.translate(-Math.round(camX), 0);
+  ctx.fillStyle = C.ground; ctx.fillRect(camX - 10, GROUND, W + 20, H - GROUND);
+  ctx.fillStyle = C.groundTop; ctx.fillRect(camX - 10, GROUND, W + 20, 3);
+  for (const p of platforms) {
+    ctx.fillStyle = C.stem; ctx.fillRect(p.x + p.w / 2 - 4, p.y + 4, 8, GROUND - p.y - 4);
+    ctx.fillStyle = C.capDark; ctx.fillRect(p.x, p.y + 4, p.w, 5);
+    ctx.fillStyle = C.cap; ctx.beginPath(); ctx.ellipse(p.x + p.w / 2, p.y + 5, p.w / 2, 9, 0, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = C.spot;
+    for (let i = 8; i < p.w - 6; i += 13) ctx.fillRect(p.x + i, p.y - 2 + ((i / 13) % 2) * 3, 3, 2);
+  }
+  // exit door
+  ctx.fillStyle = C.spore; ctx.globalAlpha = 0.6 + 0.4 * Math.sin(frame / 10);
+  ctx.fillRect(LEVEL_END + 20, GROUND - 40, 22, 40); ctx.globalAlpha = 1;
+  ctx.fillStyle = "#0e3b22"; ctx.fillRect(LEVEL_END + 24, GROUND - 36, 14, 36);
+  for (const s of spores) {
+    if (s.got) continue;
+    const y = s.y + Math.sin(frame / 14 + s.phase) * 2;
+    ctx.fillStyle = C.spore; ctx.fillRect(s.x - 2, y - 2, 4, 4);
+    ctx.fillStyle = C.white; ctx.fillRect(s.x - 1, y - 1, 1, 1);
+  }
+  for (const g of glooms) {
+    if (!g.alive && g.squish > 30) continue;
+    const squash = g.alive ? 0 : Math.min(10, g.squish);
+    const bob = g.alive ? Math.abs(Math.sin(frame / 6 + g.home)) * 2 : 0;
+    ctx.fillStyle = "#2a1640"; ctx.fillRect(g.x + 5, GROUND - 7 - bob + squash / 2, 6, 7 - squash / 2);
+    ctx.fillStyle = C.gloom; ctx.beginPath(); ctx.ellipse(g.x + 8, GROUND - 7 - bob + squash, 9, 8 - squash * 0.6, 0, Math.PI, 0); ctx.fill();
+    if (g.alive) { ctx.fillStyle = C.gloomEye; ctx.fillRect(g.x + 4 + g.dir, GROUND - 11 - bob, 2, 2); ctx.fillRect(g.x + 10 + g.dir, GROUND - 11 - bob, 2, 2); }
+  }
+  // Pip
+  if (!(pip.hurt > 0 && frame % 6 < 3) && mode !== "lost") {
+    const x = Math.round(pip.x), y = Math.round(pip.y), flap = frame % 8 < 4 ? 0 : 2;
+    ctx.fillStyle = "#e9f2ff"; ctx.globalAlpha = 0.8;
+    ctx.fillRect(x - 1 - flap, y + 1, 4, 3); ctx.fillRect(x + 9 + flap, y + 1, 4, 3); ctx.globalAlpha = 1;
+    ctx.fillStyle = C.pip; ctx.beginPath(); ctx.arc(x + 6, y + 6, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.pipBelly; ctx.fillRect(x + 3, y + 7, 6, 4);
+    ctx.fillStyle = "#111"; ctx.fillRect(x + 6 + pip.face * 2, y + 3, 2, 2);
+  }
+  for (const p of particles) { ctx.fillStyle = p.color; ctx.globalAlpha = Math.min(1, p.life / 20); ctx.fillRect(p.x | 0, p.y | 0, 2, 2); }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function drawDarkness() {
+  const won = mode === "won";
+  const radius = won ? pip.light + endTimer * 6 : mode === "title" ? 90 : pip.light;
+  dctx.globalCompositeOperation = "source-over";
+  dctx.clearRect(0, 0, W, H);
+  dctx.fillStyle = "rgba(3,4,12,0.86)"; dctx.fillRect(0, 0, W, H);
+  dctx.globalCompositeOperation = "destination-out";
+  const hole = (x, y, r) => {
+    const g = dctx.createRadialGradient(x, y, r * 0.25, x, y, r);
+    g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    dctx.fillStyle = g; dctx.beginPath(); dctx.arc(x, y, r, 0, Math.PI * 2); dctx.fill();
+  };
+  const flicker = Math.sin(frame / 5) * 1.5;
+  hole(pip.x - camX + 6, pip.y + 6, radius + flicker);
+  for (const s of spores) if (!s.got && Math.abs(s.x - camX - W / 2) < W) hole(s.x - camX, s.y, 14);
+  hole(LEVEL_END + 31 - camX, GROUND - 20, 40);
+  for (const p of particles) if (p.color === C.spore) hole(p.x - camX, p.y, 6);
+  ctx.drawImage(dark, 0, 0);
+  // warm tint where Pip's light falls
+  const g = ctx.createRadialGradient(pip.x - camX + 6, pip.y + 6, 0, pip.x - camX + 6, pip.y + 6, radius);
+  g.addColorStop(0, "rgba(255,216,74,0.16)"); g.addColorStop(1, "rgba(255,216,74,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+
+function text(str, x, y, size, color, align = "center") {
+  ctx.font = `bold ${size}px "Courier New", monospace`;
+  ctx.textAlign = align;
+  ctx.fillStyle = "#000"; ctx.fillText(str, x + 1, y + 1);
+  ctx.fillStyle = color; ctx.fillText(str, x, y);
+}
+
+function drawHud() {
+  if (mode === "title") {
+    text("PIP", W / 2, 70, 34, C.pip);
+    text("and the GLOOMSHROOMS", W / 2, 92, 14, C.spore);
+    if (frame % 60 < 40) text("press SPACE", W / 2, 150, 10, C.white);
+    return;
+  }
+  ctx.fillStyle = C.spore; ctx.fillRect(10, 10, 5, 5);
+  text(`x${count}`, 19, 16, 10, C.white, "left");
+  ctx.fillStyle = "#222844"; ctx.fillRect(W - 92, 10, 80, 6);
+  ctx.fillStyle = pip.light < 35 ? C.gloomEye : C.pip; ctx.fillRect(W - 92, 10, Math.max(0, (pip.light / 118) * 80), 6);
+  text("LIGHT", W - 98, 16, 8, C.white, "right");
+  if (mode === "won" && endTimer > 40) { text("THE FOREST GLOWS AGAIN", W / 2, 110, 16, C.spore); text(`${count} spores`, W / 2, 128, 10, C.white); }
+  if (mode === "lost") text("THE GLOW WENT OUT", W / 2, 120, 16, C.gloomEye);
+}
+
+function tick() {
+  update();
+  for (const p of particles) { p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life--; }
+  for (let i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
+  ctx.save();
+  if (shake > 0) { ctx.translate((rand() - 0.5) * shake, (rand() - 0.5) * shake); shake *= 0.85; if (shake < 0.5) shake = 0; }
+  drawWorld();
+  drawDarkness();
+  ctx.restore();
+  drawHud();
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

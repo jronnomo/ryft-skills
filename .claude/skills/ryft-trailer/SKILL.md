@@ -94,7 +94,10 @@ snap mid-jump
 node scripts/record.mjs "<game-url>" steps.txt raw/run1.mp4 --size 1920x1080
 ```
 
-It can't react to the screen, so action gameplay will look robotic. Use it for the "Made in N prompts" stills: run the same `snap` script against each build as it's made (or on the published link) and save them as `build-log/NN-prompt-N.png`. Shared Ryft game URLs open and play directly, so point it at the published link.
+It can't react to the screen, so action gameplay can look robotic. Tips from testing:
+- **Plan the script around the ending.** Many games restart on Space or Enter, so a script that keeps holding jump after the win screen appears will reset the game and cut the money shot short. End with a plain `wait` long enough for the win screen to play out.
+- **Use `snap` steps as checkpoints**, then look at them: they show at a glance whether the run survived.
+- **Quality:** scripted recordings come out around 1 Mbps, slightly softer than an OBS capture. Fine for social posts; for the hero trailer, a human OBS recording at full quality looks best. Use it for the "Made in N prompts" stills: run the same `snap` script against each build as it's made (or on the published link) and save them as `build-log/NN-prompt-N.png`. Shared Ryft game URLs open and play directly, so point it at the published link.
 
 **C. During development**, remind the creator (via `ryft-iterate`) to grab a screenshot after each prompt. It's free footage for a build montage later.
 
@@ -107,7 +110,7 @@ It can't react to the screen, so action gameplay will look robotic. Use it for t
 node scripts/footage.mjs sheet raw/session.mov work/sheet.jpg --every 2
 ```
 
-Look at the sheet (it's an image you can read) to find the shot-list moments, then write `cuts.txt`:
+Look at the sheet (it's an image you can read) to find the shot-list moments. To pin down an exact moment inside one clip, make a finer sheet of just that clip: `sheet clip.mp4 work/clip-sheet.jpg --every 0.5`. Then write `cuts.txt`:
 
 ```text
 # start-end  name           (a few seconds of padding helps brag)
@@ -142,6 +145,8 @@ trailer-kit/
   build-log/      per-prompt screenshots (Made in N prompts only)
 ```
 
+Watch for in-game text (win screens, "Level 2", tutorials) in shots that will sit under trailer text, especially the end card. Pick a background without it, or the two layers of text collide.
+
 Fill `TRAILER.md` and `PRODUCT.md` from the templates next to this file, using `GAME.md`, the art bible (exact palette hexes) and the listing from `ryft-publish-ready`. Every beat in `TRAILER.md` names the clip it uses. Never invent a moment the clips don't show.
 
 ## 7. Render with /brag
@@ -154,7 +159,9 @@ From inside `trailer-kit/`:
 /brag-slim --format landscape --duration 40 --tone "video game gameplay trailer: cold open on gameplay, escalating cuts on the beat, mood text cards, late title reveal, end card 'Play free on Ryft'. Follow TRAILER.md exactly. This is a game trailer, not a product launch: no feature cards, no claims, no SaaS language. Use the gameplay clips in clips/ as the footage, at least 70% of runtime. Music: <style from TRAILER.md>."
 ```
 
-Teaser: `--format vertical --duration 15`. Square loop for feeds: `--format square --duration 6`.
+Teaser: `--format vertical --duration 15`. Square loop for feeds: `--format square --duration 6`. Brag's own rules aim for 15–25s, so always pass `--duration` for a 30–45s trailer.
+
+See [`examples/pip-and-the-gloomshrooms/trailer/`](../../../examples/pip-and-the-gloomshrooms/trailer/) for a complete run: the recorder steps, the cut list, the kit files and the finished 24s trailer.
 
 Review what brag returns against `TRAILER.md`:
 - Does it open on gameplay, not a title?

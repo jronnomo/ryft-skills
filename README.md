@@ -51,6 +51,10 @@ Two helper scripts, both tested:
 
 Formats: 15s vertical teaser, 30–45s gameplay trailer, 6s loop, and "Made in N prompts", which turns the build log into a before/after montage.
 
+[![Pip and the Gloomshrooms trailer](examples/pip-and-the-gloomshrooms/trailer/brag.jpg)](examples/pip-and-the-gloomshrooms/trailer/)
+
+A complete test run, from scripted recording to finished 24s trailer, is in [`examples/pip-and-the-gloomshrooms/trailer`](examples/pip-and-the-gloomshrooms/trailer/).
+
 ## Password saves, the old-school way
 
 Ryft games don't keep save data. So we borrowed a trick from the 8-bit era: at each checkpoint the game shows a code like `K7QM-2HXA`. Type it back in later and you're on the same level with the same lives and items.

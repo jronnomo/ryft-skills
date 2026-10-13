@@ -29,7 +29,7 @@
 | | Big moment | | none | then silence/black |
 | | Title reveal | art/title.png | <Game Title> | |
 | | The button | | none | |
-| | End card | art/title.png | "Play free on Ryft" + <link> | hold 2–3s |
+| | End card | art/title.png over dimmed gameplay | "Play free on Ryft" + <link> | hold 2–3s; background must have no in-game text |
 
 ## Look
 - Palette (from art-bible.md): <name #hex, ...>
