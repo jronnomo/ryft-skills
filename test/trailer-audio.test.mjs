@@ -46,3 +46,20 @@ test("game audio clips land where the edit puts them, sped up when asked", () =>
   assert.ok(levelAt(out, 2.5, 0.15) > -40, "tone at 2.5 s");
   assert.ok(levelAt(out, 1.0, 0.2) < -70, "nothing at the source time");
 });
+
+test("samples land with their loudest moment on the cue", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ryft-sample-"));
+  const riser = path.join(dir, "riser.wav");
+  // 1.5 s of quiet build, then a loud 0.1 s hit at 1.5 s.
+  execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi", "-i", "sine=f=200:d=2", "-af", "volume='if(between(t,1.5,1.6),1,0.02)':eval=frame", riser]);
+  const s = new Score({ seconds: 4 });
+  const { peakSeconds } = s.sample(riser, 3.0, { gain: 1, rev: 0 });
+  assert.ok(Math.abs(peakSeconds - 1.5) < 0.12, `peak found at ${peakSeconds}`);
+  const out = s.write(path.join(dir, "out.wav"), { fadeOut: 0.01 });
+  // Loudness normalization compresses dynamics, so check where the loudest 50 ms window is.
+  const windows = [];
+  for (let t = 1.0; t < 3.8; t += 0.05) windows.push([t, levelAt(out, t, 0.05)]);
+  const loudest = windows.sort((a, b) => b[1] - a[1])[0][0];
+  assert.ok(Math.abs(loudest - 3.0) <= 0.1, `loudest moment at ${loudest.toFixed(2)} s, expected 3.0 s`);
+  fs.rmSync(dir, { recursive: true });
+});

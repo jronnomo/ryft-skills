@@ -203,6 +203,33 @@ export class Score {
     }
   }
 
+  // A recorded sample (e.g. from sfx.mjs). align "peak" puts the sample's loudest moment at t
+  // (a riser's hit, an impact's crack); "start" puts its first sample at t.
+  sample(file, t, { gain = 0.8, align = "peak", bus = "sfx", rev = 0.15, pan = 0 } = {}) {
+    this.samples ??= new Map();
+    if (!this.samples.has(file)) {
+      const tmp = path.join(os.tmpdir(), `ryft-sample-${process.pid}-${this.samples.size}.f32`);
+      execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", file, "-ac", "2", "-ar", String(SR), "-f", "f32le", tmp]);
+      const raw = new Float32Array(fs.readFileSync(tmp).buffer.slice(0));
+      fs.rmSync(tmp);
+      let peak = 0, at = 0;
+      for (let i = 0; i < raw.length; i++) if (Math.abs(raw[i]) > peak) { peak = Math.abs(raw[i]); at = i >> 1; }
+      this.samples.set(file, { raw, peakAt: at });
+    }
+    const { raw, peakAt } = this.samples.get(file);
+    const start = Math.round(t * SR) - (align === "peak" ? peakAt : 0);
+    const [L, R] = this.bus[bus];
+    const gl = Math.cos(((pan + 1) * Math.PI) / 4) * Math.SQRT2, gr = Math.sin(((pan + 1) * Math.PI) / 4) * Math.SQRT2;
+    for (let i = 0; i < raw.length / 2; i++) {
+      const k = start + i;
+      if (k < 0 || k >= this.n) continue;
+      const l = raw[i * 2] * gain, r = raw[i * 2 + 1] * gain;
+      L[k] += l * gl; R[k] += r * gr;
+      this.send[k] += ((l + r) / 2) * rev;
+    }
+    return { peakSeconds: peakAt / SR };
+  }
+
   // --- mix automation ---------------------------------------------------------
   // Dip the music bus under a hit: fast attack, slower release.
   duck(t, { depth = 0.5, attack = 0.03, hold = 0.15, release = 0.5 } = {}) {

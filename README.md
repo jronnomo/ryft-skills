@@ -88,6 +88,8 @@ node campaign.mjs report                                     # compare formats a
 | `cut.mjs` | Renders a whole trailer from one timeline file (shots, punch-ins, text cards in the game's style, end card), then runs QC: frames, black/frozen picture, flashes, loudness |
 | `trailer-audio.mjs` | A synth toolkit for scores and trailer SFX (braams, risers, whooshes, booms), the game's audio placed per shot, ducking, a −14 LUFS master |
 | `compare.mjs` | A/B two cuts: side-by-side video, matched moments, QC for each |
+| `sfx.mjs` | Real sound effects from Freesound (CC0 / CC BY only), with an automatic credits file (`FREESOUND_API_KEY`, free) |
+| `review.mjs` | A second opinion that **watches and listens**: Gemini grades the trailer on the rubric and the mix (`GEMINI_API_KEY`) |
 | `export.mjs` | X-ready 16:9, 1:1 and 9:16 versions |
 
 [![Pip and the Gloomshrooms trailer](examples/pip-and-the-gloomshrooms/trailer/brag.jpg)](examples/pip-and-the-gloomshrooms/trailer/)

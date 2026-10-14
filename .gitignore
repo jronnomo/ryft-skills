@@ -7,3 +7,5 @@ raw/
 brag-output*/
 test-results/
 trailers/
+.env
+.env.*

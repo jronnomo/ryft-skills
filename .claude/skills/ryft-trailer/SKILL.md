@@ -101,6 +101,8 @@ Read the sheets (they're images): find the core verb, the hook, every area/enemy
 - For cards and text, use the 2× `snap` stills with a slow push (5–10% over the shot).
 - Show a changing mechanic with a **match cut**: the same framing early and late (clean hand → worn hand).
 - Speed up slow, turn-based stretches (1.5–3×); cut out the thinking, keep the outcomes.
+- **Don't crop on top of the game's own camera moves.** Many games punch in on a spell or a hit for a few frames. A crop on top of that doubles the zoom and clips the HUD. Check a shot frame by frame (`sheet clip.mp4 s.jpg --every 0.2`) and show those moments full frame.
+- **Skip misplays.** Scripted runs make mistakes ("Not enough energy", a wasted turn). Pick in-points that avoid error messages: a viewer reads them as sloppy play.
 
 ## 5. Build the trailer kit
 
@@ -133,11 +135,29 @@ node scripts/cut.mjs timeline.mjs trailer.mp4 --music music.wav
 
 It renders every shot to an exact frame count (video with crops/dim/blur, stills with push-ins, black), draws the cards and end card, mixes, and prints a QC report (frames, unplanned black, frozen picture, flashes per second, LUFS, true peak), failing if anything is out of spec. One timeline driving picture, text and sound is what keeps everything in sync. See `examples/` for timelines.
 
+**Real sound effects:** they're the biggest audio upgrade over synthesis. `scripts/sfx.mjs` searches Freesound for real recorded impacts, whooshes and ambience (CC0 and CC BY only by default) and keeps a `CREDITS.md` of every sound used. Mix them in with `trailer-audio.mjs`: `s.sample(file, t)` puts a sample's **loudest moment** on `t` (a riser's hit, an impact's crack land on the cue), or `{ align: "start" }` for things like card slides and bells. Needs a free `FREESOUND_API_KEY`.
+
+```bash
+node scripts/sfx.mjs search "heavy sword impact" --max 2
+node scripts/sfx.mjs get 123456 654321 --out trailer-kit/audio/sfx     # + CREDITS.md
+```
+
+Put CC BY credits wherever the trailer is published (the post's reply, the Ryft listing).
+
 **Sound:** build the score with `scripts/trailer-audio.mjs` (organ, choir, strings, bells, chiptune plucks, drums, braams, risers, whooshes, booms, sub drops, the game's audio placed per clip, ducking, real silence, −14 LUFS master). Pick a BPM with whole frames per beat (90, 100, 120, 150). Put on-screen hits on SFX cues, duck the music under them, and stop the music before the title.
 
 Teaser: `--format vertical --duration 15` (reframe per §8 of the reference). Loop: `--format square --duration 6`.
 
 ## 7. Grade, then deliver
+
+**Get a second opinion that listens.** `scripts/review.mjs` sends the render to Google Gemini, which watches *and hears* it. It scores the same rubric and answers mix questions stills can't (does the score clash with the game's music, do hits land, is the silence real). It's advisory: compare it with your own grade, fix what you both flag, and still have a person watch it.
+- **Trust its specific notes more than its total.** In practice it scores generously (it gave a cut 20/20 that the rubric gave 18), but its timestamped fixes were real: a too-dense card screen, and a misplay message nobody had noticed.
+- **Use it across versions.** Run it on each cut. The useful signal is which notes disappear and which new ones appear.
+- **Free tier quirks:** the Pro alias is often out of quota and models get busy. The script retries busy models and falls back down a list automatically. Needs `GEMINI_API_KEY`; the upload is deleted afterwards.
+
+```bash
+node scripts/review.mjs trailer.mp4 --brief trailer-kit/TRAILER.md --out review.json
+```
 
 Score the render with the rubric in `references/trailer-craft.md` §9 (opening, genre clarity, hook timing, escalation, readability, text, sound, sync, ending, honesty). **Ship at ≥ 16/20, with no zeros**; otherwise fix the lowest scores and re-render. Run the QC list (§10): black/freeze detection, loudness, flashes, a muted look on a phone-sized frame.
 

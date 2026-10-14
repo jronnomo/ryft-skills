@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "node --test .claude/skills/ryft-password-save/reference/password.test.js test/footage.test.mjs test/trailer-audio.test.mjs test/x-launch.test.mjs && node scripts/build-uploads.js --check",
+    "test": "node --test .claude/skills/ryft-password-save/reference/password.test.js test/footage.test.mjs test/trailer-audio.test.mjs test/x-launch.test.mjs test/sfx-review.test.mjs && node scripts/build-uploads.js --check",
     "build": "node scripts/build-uploads.js",
     "budget": "node .claude/skills/ryft-game-director/scripts/budget.js",
     "test:browser": "node --test --test-concurrency=1 test/record.test.mjs test/cut.test.mjs test/feed-check.test.mjs"
