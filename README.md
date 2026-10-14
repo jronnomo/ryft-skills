@@ -1,112 +1,138 @@
 # Ryft Skills
 
-**Open-source AI skills that help anyone turn an idea into a game on [Ryft](#about-ryft), even if they've never written a prompt.**
+**An open-source toolkit for [Ryft](#about-ryft) creators: turn what you imagine into a game, make it play great inside X posts, cut real-gameplay trailers, and launch it.**
 
-Ryft builds 2D browser games from text prompts. That's magic when you know what to ask for, and a blank box when you don't. These skills give your AI assistant (Claude Code, Claude.ai, or any agent that supports `SKILL.md` skills) the know-how of a patient game designer: they interview you about your idea, write the prompts and upload files for Ryft, give your game a consistent look, help you fix what's broken with annotated screenshots, design levels, add retro save codes, and get the game ready to publish.
+Ryft builds 2D browser games from text prompts, and a Ryft game link posted on X becomes **a playable game inside the post**. These skills give your AI assistant (Claude Code, Claude.ai, or any agent that supports `SKILL.md` skills) the know-how of a game designer, a trailer editor and a launch marketer, plus tested tools that do the heavy lifting.
 
 ```
- "a little guy in a          Game Concept      First build      play → fix →       levels,       published
-  spooky mushroom forest"  →     Card       →    prompt     →    reprompt     →  save codes  →    game
-       idea-spark          art-director       prompt-builder      iterate        level-designer  publish-ready
-                                                                                 password-save
+ imagine   →   build    →  feed-ready  →  trailer   →  launch on X  →   track
+idea-spark   prompt-builder   feed-check    ryft-trailer   ryft-x-launch   campaign.mjs
+art-director iterate          (480×480      record, cut,   posts that      what worked:
+             level-designer    X card)      score, compare  play in-feed   formats, trailers
+             password-save
+             publish-ready
 ```
+
+## Install
+
+**Claude Code** (one command, every skill):
+
+```text
+/plugin install ryft-skills --marketplace jronnomo/ryft-skills
+```
+
+Or `/plugin marketplace add jronnomo/ryft-skills` then `/plugin install ryft-skills@ryft-skills`. Then just talk: *"I want to make a Ryft game about a raccoon in a supermarket"*, or run `/ryft-game-director`.
+
+**The tools** (trailers, feed checks, campaign tracking) need Node 22+ and ffmpeg. The browser-based ones also need Playwright:
+
+```bash
+git clone https://github.com/jronnomo/ryft-skills.git && cd ryft-skills
+npm install && npx playwright install chromium
+```
+
+**Claude.ai:** zip any skill folder (e.g. `.claude/skills/ryft-idea-spark/`) and upload it under Settings → Capabilities → Skills.
+**Other assistants:** each `SKILL.md` is plain Markdown; paste it into custom instructions or project knowledge.
 
 ## The skills
 
-| Skill | Use it when… | You get |
+| Stage | Skill | You get |
 |---|---|---|
-| [`ryft-game-director`](.claude/skills/ryft-game-director/SKILL.md) | You're starting out or wondering "what next?" | A guide that routes you to the right step |
-| [`ryft-idea-spark`](.claude/skills/ryft-idea-spark/SKILL.md) | You have a vibe, not a plan, or no idea at all | A one-page **Game Concept Card** |
-| [`ryft-art-director`](.claude/skills/ryft-art-director/SKILL.md) | You care how it looks, have reference art, or a character drifts off-model | An uploadable **art bible**: style rules + named, reusable assets |
-| [`ryft-prompt-builder`](.claude/skills/ryft-prompt-builder/SKILL.md) | You're ready for Ryft's first build | An uploadable **design brief** + a short first prompt |
-| [`ryft-iterate`](.claude/skills/ryft-iterate/SKILL.md) | Something's broken, feels off, or is missing | One precise **reprompt** at a time, with **annotated screenshots** for visual bugs |
-| [`ryft-level-designer`](.claude/skills/ryft-level-designer/SKILL.md) | The core works and you want more of it | An uploadable **levels.md** with ASCII maps and a difficulty curve |
-| [`ryft-password-save`](.claude/skills/ryft-password-save/SKILL.md) | Players need to come back later | NES-style **continue codes**, no save data needed |
-| [`ryft-publish-ready`](.claude/skills/ryft-publish-ready/SKILL.md) | You think it's done | Stranger-test checklist + **title, description, tags** |
-| [`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) | You want people to see it | **Game trailers**, teasers, preview loops and "made in N prompts" montages, rendered with [/brag](https://github.com/latent-spaces/brag) |
+| Start | [`ryft-game-director`](.claude/skills/ryft-game-director/SKILL.md) | A guide that routes you to the right step |
+| Imagine | [`ryft-idea-spark`](.claude/skills/ryft-idea-spark/SKILL.md) | A one-page **Game Concept Card**, even from "just a vibe" |
+| Look | [`ryft-art-director`](.claude/skills/ryft-art-director/SKILL.md) | An uploadable **art bible**: style rules + named, reusable assets |
+| Build | [`ryft-prompt-builder`](.claude/skills/ryft-prompt-builder/SKILL.md) | An uploadable **design brief** + a short first prompt, designed to play in an X post |
+| Fix | [`ryft-iterate`](.claude/skills/ryft-iterate/SKILL.md) | One precise **reprompt** at a time, with annotated screenshots |
+| Grow | [`ryft-level-designer`](.claude/skills/ryft-level-designer/SKILL.md) | Uploadable **level maps** and a difficulty curve |
+| Save | [`ryft-password-save`](.claude/skills/ryft-password-save/SKILL.md) | NES-style **continue codes**: no save data needed |
+| Ship | [`ryft-publish-ready`](.claude/skills/ryft-publish-ready/SKILL.md) | Stranger test, **feed check**, title, description, tags |
+| Show | [`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) | **Real-gameplay trailers** made to professional craft, compared and exported for X |
+| Launch | [`ryft-x-launch`](.claude/skills/ryft-x-launch/SKILL.md) | A launch week of **drafted posts**, one-click compose links, and a **campaign tracker** |
 
-See [`examples/pip-and-the-gloomshrooms`](examples/pip-and-the-gloomshrooms/GAME.md) for a full walk-through from idea to listing, and start your own from [`templates/GAME.md`](templates/GAME.md).
+Walk-through: [`examples/pip-and-the-gloomshrooms`](examples/pip-and-the-gloomshrooms/GAME.md). Start your own from [`templates/GAME.md`](templates/GAME.md).
+
+## Games that play inside X posts
+
+A Ryft link on X renders as a **480×480 playable card**. That's a phone-sized square, muted, often seen for a second while scrolling. A game designed for a 16:9 desktop window looks very different there. [`feed-check.mjs`](.claude/skills/ryft-x-launch/scripts/feed-check.mjs) measures it:
+
+```bash
+node .claude/skills/ryft-x-launch/scripts/feed-check.mjs https://ryft.fun/games/<id>-<slug> feed/
+```
+
+On a live 16:9 game it found the game filled **54%** of the card, drew everything at **24%** of its 1080p size (body text ≈ 5 px), and appeared after ~4.5 s. It also says what to ask Ryft for (square layout, bigger type, one-tap start). The prompt builder and publish checklist now design for the card from the first prompt.
+
+## Launching on X
+
+[`ryft-x-launch`](.claude/skills/ryft-x-launch/SKILL.md) is built on [research with sources](.claude/skills/ryft-x-launch/references/x-playbook.md):
+- **Ryft games play right in the post:** confirmed by creators playing Ryft games inside X posts.
+- **How X ranks posts:** from the open-sourced ranker, copy-link shares weigh 20×, replies and DM shares 5×, likes 0.66×.
+- **Formats that work:** native clips with the game in the first reply, playable posts, challenges, loops, devlogs.
+- **What automation X forbids.**
+
+**It drafts; you post.** X permanently suspends browser-scripted automation, so there are no bots here. [`campaign.mjs`](.claude/skills/ryft-x-launch/scripts/campaign.mjs) keeps a local `campaign.json`:
+
+```bash
+node campaign.mjs init https://ryft.fun/games/<id>-<slug>   # checks the playable card
+node campaign.mjs add --type playable --text "..."           # one-click compose link
+node campaign.mjs log p1 impressions=4200 replies=19 linkClicks=140
+node campaign.mjs report                                     # compare formats and trailer versions
+```
+
+## Trailers that look like game trailers
+
+[`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) follows what working trailer editors teach ([reference with sources](.claude/skills/ryft-trailer/references/trailer-craft.md)): gameplay in the first 2 seconds, genre → hook → content, the game's own sounds, readable shots on a phone, title last, then a 20-point grade before delivery.
+
+| Tool | What it does |
+|---|---|
+| `record.mjs` | Plays a game from a script of inputs and records it, **with the game's own audio** (synced within a frame) and **2× stills** for crisp close-ups |
+| `footage.mjs` | Contact sheets to find moments, named clips, preview GIFs |
+| `cut.mjs` | Renders a whole trailer from one timeline file (shots, punch-ins, text cards in the game's style, end card), then runs QC: frames, black/frozen picture, flashes, loudness |
+| `trailer-audio.mjs` | A synth toolkit for scores and trailer SFX (braams, risers, whooshes, booms), the game's audio placed per shot, ducking, a −14 LUFS master |
+| `compare.mjs` | A/B two cuts: side-by-side video, matched moments, QC for each |
+| `export.mjs` | X-ready 16:9, 1:1 and 9:16 versions |
+
+[![Pip and the Gloomshrooms trailer](examples/pip-and-the-gloomshrooms/trailer/brag.jpg)](examples/pip-and-the-gloomshrooms/trailer/)
 
 ## Built around Ryft's uploads
 
-Ryft accepts `.md` and `.png` uploads and generates reusable assets natively, so the skills keep the typed prompt short and put the detail in files:
+Ryft accepts `.md` and `.png` uploads and generates reusable assets, so the skills keep prompts short and put detail in files:
 
 | Upload | From | What it does |
 |---|---|---|
 | `design-brief.md` | prompt-builder | The full spec for the first build |
 | `art-bible.md` | art-director | Style rules + one name per asset, so Ryft reuses instead of redrawing |
-| `ref-*.png` | art-director | Inspiration: sketches, mood boards. Always paired with "take X, not Y" |
-| `fix-*.png` / `good-*.png` | iterate, art-director | Annotated screenshots of what's wrong, and what right looks like |
-| `levels.md` | level-designer | Exact level maps, one or two at a time |
+| `ref-*.png` | art-director | Inspiration, always paired with "take X, not Y" |
+| `fix-*.png` / `good-*.png` | iterate | Annotated screenshots of what's wrong and what right looks like |
+| `levels.md` | level-designer | Exact level maps |
 | `password-save.md` | password-save | The save-code module, ready to upload |
-
-## Trailers that look like game trailers
-
-[`ryft-trailer`](.claude/skills/ryft-trailer/SKILL.md) directs a video game trailer (cold open on gameplay, escalating cuts on the beat, mood text cards, late title reveal, "Play free on Ryft" end card) and hands the render to [`/brag`](https://github.com/latent-spaces/brag). Brag's defaults are made for product launches, so the skill packs a `trailer-kit/` with a beat-by-beat `TRAILER.md` and a game-flavoured `PRODUCT.md` to steer it.
-
-Two helper scripts, both tested:
-
-- **`footage.mjs`** (ffmpeg): makes a contact sheet to find highlights, cuts a recording into named clips plus stills, and makes looping preview GIFs
-- **`record.mjs`** (Playwright, optional): plays a game from a scripted list of inputs (`press Space`, `hold ArrowRight 1.2`, `snap title`) and records it. Good for title screens, menus, puzzles and per-build screenshots; for action gameplay, a human recording looks better
-
-Formats: 15s vertical teaser, 30–45s gameplay trailer, 6s loop, and "Made in N prompts", which turns the build log into a before/after montage.
-
-[![Pip and the Gloomshrooms trailer](examples/pip-and-the-gloomshrooms/trailer/brag.jpg)](examples/pip-and-the-gloomshrooms/trailer/)
-
-A complete test run, from scripted recording to finished 24s trailer, is in [`examples/pip-and-the-gloomshrooms/trailer`](examples/pip-and-the-gloomshrooms/trailer/).
 
 ## Password saves, the old-school way
 
-Ryft games don't keep save data. So we borrowed a trick from the 8-bit era: at each checkpoint the game shows a code like `K7QM-2HXA`. Type it back in later and you're on the same level with the same lives and items.
+Ryft games don't keep save data, so we borrowed a trick from the 8-bit era: at each checkpoint the game shows a code like `K7QM-2HXA`. Type it back in later and you're on the same level with the same items. They also make great "beat my run" challenges on X.
 
-[`ryft-password-save`](.claude/skills/ryft-password-save/SKILL.md) ships a small, dependency-free, tested JavaScript module ([`password.js`](.claude/skills/ryft-password-save/reference/password.js)), plus a compact copy ready to upload to Ryft ([`password-save.md`](.claude/skills/ryft-password-save/password-save.md), 3.6 KB). The module:
-
-- packs any list of fields (level, lives, upgrades…) into the fewest bits possible
-- adds a checksum salted per game, so typos and codes from other games are rejected
-- scrambles the result, so level 1 and level 2 codes look nothing alike
-- uses 32 symbols with no look-alikes (`0/O`, `1/I`)
+The [module](.claude/skills/ryft-password-save/reference/password.js) packs any fields into the fewest bits, adds a per-game checksum (typos and codes from other games are rejected), scrambles neighbouring states, and uses 32 symbols with no look-alikes:
 
 ```js
-const pw = createPasswordSystem({
-  gameId: "pip-gloomshrooms",
-  fields: [{ name: "level", max: 7 }, { name: "lives", max: 5 }, { name: "hasDash", max: 1 }],
-});
-pw.encode({ level: 3, lives: 2, hasDash: 1 }); // → "B3PM"
-pw.decode("b3pm");                             // → { level: 3, lives: 2, hasDash: 1 }
+const pw = createPasswordSystem({ gameId: "pip-gloomshrooms", fields: [{ name: "level", max: 7 }, { name: "lives", max: 5 }] });
+pw.encode({ level: 3, lives: 2 });   // → a short code
+pw.decode(code);                     // → { level: 3, lives: 2 }, or null for a bad code
 ```
 
-## Install
-
-### Claude Code
-
-Copy the skills into your personal skills folder so they're available in every project:
+## Tests
 
 ```bash
-git clone https://github.com/jronnomo/ryft-skills.git
-cp -R ryft-skills/.claude/skills/ryft-* ~/.claude/skills/
+npm test               # password module, footage tools, audio toolkit, campaign tracker (ffmpeg)
+npm run test:browser   # recorder + audio sync, trailer renderer, feed check (Playwright)
 ```
-
-Or open Claude Code inside this repo, and the skills load automatically.
-
-Then just talk: *"I want to make a Ryft game about a raccoon in a supermarket"* or run `/ryft-game-director`.
-
-### Claude.ai
-
-Zip any skill folder (e.g. `ryft-idea-spark/`) and upload it under **Settings → Capabilities → Skills**.
-
-### Other assistants
-
-Each `SKILL.md` is plain Markdown with a short YAML header. Paste it into any assistant's custom instructions or project knowledge.
 
 ## About Ryft
 
-Ryft is a platform where creators describe a game in a prompt and a trained AI builds it, then iterate (prompt, build, test, reprompt) until it's ready to publish to the platform. Games are currently 2D and browser-based.
+Ryft is a platform where creators describe a game in a prompt and a trained AI builds it; they iterate (prompt, build, test, reprompt) and publish. Games are 2D and browser-based, and play inside X posts.
 
-This is a **community project and is not affiliated with Ryft**. Everything the skills assume about the platform lives in one file, [`ryft-platform.md`](.claude/skills/ryft-game-director/ryft-platform.md). If Ryft changes, that's the place to update.
+This is a **community project, not affiliated with Ryft**. Everything the skills assume about the platform lives in [`ryft-platform.md`](.claude/skills/ryft-game-director/ryft-platform.md). If Ryft changes, update it there.
 
 ## Contributing
 
-Ideas, new skills, and better prompts are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+New skills, better prompts, genre playbooks, and real launch numbers are all welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

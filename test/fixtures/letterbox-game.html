@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Letterbox Game</title>
+<style>
+  /* Test fixture: a 16:9 game letterboxed inside whatever window it gets, with matching bars. */
+  html,body{margin:0;height:100%;background:#141a2a;display:grid;place-items:center}
+  canvas{width:100vw;aspect-ratio:16/9;display:block}
+</style>
+<canvas id="c" width="640" height="360"></canvas>
+<script>
+  const g = document.getElementById("c").getContext("2d");
+  let hue = 30;
+  function draw() {
+    g.fillStyle = `hsl(${hue},40%,25%)`; g.fillRect(0, 0, 640, 360);
+    g.fillStyle = "#f0c060"; g.font = "48px serif"; g.fillText("TAP TO START", 160, 190);
+    g.fillStyle = "#7dff9a"; for (let i = 0; i < 12; i++) g.fillRect(40 + i * 48, 300, 24, 24);
+  }
+  addEventListener("pointerdown", () => { hue = (hue + 140) % 360; draw(); });
+  draw();
+</script>

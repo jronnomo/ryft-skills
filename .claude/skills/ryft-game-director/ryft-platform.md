@@ -12,6 +12,7 @@
 - Games are **2D** and run **in the browser**.
 - Games have **no built-in save data**. Players start fresh each visit.
 - **Game URLs work when shared.** A published game's link opens and plays directly in a browser.
+- **Ryft games play inside X posts.** A game link posted on X renders as a playable **player card** (checked on a live game, 2026-10: `twitter:card=player`, `twitter:player=https://ryft.fun/embed/games/<id>`, **480×480**, and the embed's security policy lists `x.com`/`twitter.com` in `frame-ancestors`). The card shows the game's cover art until played. Ryft's player bar takes the top 44 px and starts **muted**. **Confirmed playable inside X** by a Ryft creator who played Ryft games in X posts (2026-10-14).
 - Recording games and sharing gameplay footage (trailers, clips, streams, social posts) is allowed.
 - Ryft **generates assets and textures natively** (characters, tiles, backgrounds, items), and those assets can be **reused throughout a game**.
 - Creators can **upload `.md` files and `.png` images** alongside prompts, to:
@@ -48,6 +49,23 @@ Things to avoid or scope down:
 - Saving progress automatically. Use password codes instead
 - Huge open worlds in the first prompt. Start with one room, one level, one screen
 - Uploading someone else's characters or art to copy. Reference images are for **mood, palette and style**, not for cloning (games are published publicly)
+
+## Designing for the X player card
+
+The card is a 480×480 square on a phone. Measured on a live 16:9 game (`feed-check.mjs`):
+- the game filled only **~54%** of the card (letterboxed to ~480×259),
+- everything was drawn at **~24%** of its 1080p size (body text ≈ 5 px: unreadable),
+- Ryft's loading screen showed at ~1 s and the game at ~4.5 s.
+
+So for games meant to spread on X *(the rules below are recommendations; whether Ryft's builder honours a square layout is unconfirmed)*:
+- Ask for a **square (1:1) or responsive layout** that fills the play area.
+- **Big type and big targets**: at 480 px, text needs to be drawn at ≥ 16 px *in the card*.
+- **One tap starts**; touch controls first; no keyboard-only input.
+- **Works muted**: sound is off until the player unmutes.
+- **A satisfying loop in 30–90 s**, ending on a shareable result (a score, a password code: "beat my run").
+- **Fast first screen**: the game visible within ~5 s; a static title appears first.
+
+Run `node .claude/skills/ryft-x-launch/scripts/feed-check.mjs <game-url> out/` to measure a game before posting it.
 
 ## Prompt size
 

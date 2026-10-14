@@ -36,3 +36,29 @@ test("records a game responding to scripted input", () => {
   assert.ok(!title.equals(moved), "the game didn't react to input");
   fs.rmSync(dir, { recursive: true });
 });
+
+test("--audio records the game's sound in sync with the picture", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ryft-sync-test-"));
+  const steps = path.join(dir, "steps.txt");
+  fs.writeFileSync(steps, "wait 1\nclick\npress Space\nwait 1.5\npress Space\nwait 1.5\npress Space\nwait 1\n");
+  const out = path.join(dir, "sync.mp4");
+  execFileSync("node", [".claude/skills/ryft-trailer/scripts/record.mjs", "test/fixtures/sync-game.html", steps, out, "--size", "320x180", "--audio"]);
+
+  // Flash onsets: frames where brightness jumps.
+  const flashes = [];
+  const log = execFileSync("sh", ["-c", `ffmpeg -hide_banner -i '${out}' -vf "signalstats,metadata=print:key=lavfi.signalstats.YAVG" -f null - 2>&1`]).toString();
+  const times = [...log.matchAll(/pts_time:([\d.]+)[\s\S]*?YAVG=([\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
+  times.forEach(([t, y], i) => { if (y > 100 && (i === 0 || times[i - 1][1] <= 100)) flashes.push(t); });
+  flashes.shift(); // the recorder's own clapperboard flash at the start
+
+  // Beep onsets: 10ms windows where the level jumps.
+  const alog = execFileSync("sh", ["-c", `ffmpeg -hide_banner -i '${out}' -af "aresample=44100,asetnsamples=n=441,astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level" -f null - 2>&1`]).toString();
+  const levels = [...alog.matchAll(/RMS_level=(-?[\d.]+|-inf)/g)].map((m) => (m[1] === "-inf" ? -200 : Number(m[1])));
+  const beeps = [];
+  levels.forEach((l, i) => { if (l > -30 && (i === 0 || levels[i - 1] <= -30)) beeps.push(i * 0.01); });
+
+  assert.strictEqual(flashes.length, 3, `flashes at ${flashes}`);
+  assert.strictEqual(beeps.length, 3, `beeps at ${beeps}`);
+  flashes.forEach((f, i) => assert.ok(Math.abs(f - beeps[i]) < 0.07, `flash ${f}s vs beep ${beeps[i]}s`));
+  fs.rmSync(dir, { recursive: true });
+});

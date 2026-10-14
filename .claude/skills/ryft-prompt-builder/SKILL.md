@@ -22,7 +22,8 @@ If the creator doesn't have a Game Concept Card yet, either run `ryft-idea-spark
 9. **Stay inside Ryft's box:** 2D, browser, no accounts, no online play, no automatic saving.
 10. **Keep it scannable.** Short headed sections and bullets.
 11. **Put the detail in an upload, not the prompt box.** Ryft accepts `.md` and `.png` uploads. Save the full spec as `design-brief.md` and keep the typed prompt to a few lines that point at it.
-12. **Keep the brief tight.** Aim for a brief around 4 KB and an art bible around 2.5 KB. Everything in them should matter for *this* build.
+12. **Design for the X feed from the start.** Ryft games play inside X posts in a 480×480 square. Include the "PLAYS INSIDE AN X POST" block (see `ryft-platform.md`) unless the creator only wants browser play. Retrofitting a 16:9 desktop layout later is much harder.
+13. **Keep the brief tight.** Aim for a brief around 4 KB and an art bible around 2.5 KB. Everything in them should matter for *this* build.
 
 ## Package it: brief + short prompt
 
@@ -92,6 +93,13 @@ LOOK & SOUND
 - Style: <pixel art / flat shapes / ...>
 - Colours: <palette>
 - Juice: <screen shake on hit, particles on pickup, short sound effects for jump/hit/collect>
+
+PLAYS INSIDE AN X POST (480x480 square, phone, muted)
+- Square (1:1) or responsive layout that fills the play area
+- Large text and buttons; readable on a phone
+- One tap starts; touch controls work everywhere
+- Works with the sound off
+- A run lasts 30-90 seconds and ends on a shareable result (score / password code)
 
 DON'T
 - <the obvious wrong guess to avoid>

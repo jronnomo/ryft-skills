@@ -1,0 +1,15 @@
+{
+  "name": "ryft-skills",
+  "description": "Open-source toolkit for Ryft creators: imagine, build, trailer and launch games that play inside X posts.",
+  "owner": {
+    "name": "Ryft Skills contributors",
+    "url": "https://github.com/jronnomo/ryft-skills"
+  },
+  "plugins": [
+    {
+      "name": "ryft-skills",
+      "source": ".",
+      "description": "Imagine, build, trailer and launch Ryft games, including games that play inside X posts."
+    }
+  ]
+}

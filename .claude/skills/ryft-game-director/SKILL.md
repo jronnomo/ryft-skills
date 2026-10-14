@@ -1,6 +1,6 @@
 ---
 name: ryft-game-director
-description: Start here for any Ryft game. Guides a creator from a vague idea to a published Ryft game by routing them through the other ryft-* skills in order (idea → prompt → build/test loop → levels → save codes → publish). Use when someone says they want to make a game on Ryft, has a game idea but doesn't know where to begin, or asks "what should I do next" on a Ryft project.
+description: Start here for any Ryft game. Guides a creator from a vague idea to a published, launched Ryft game by routing them through the other ryft-* skills in order (idea → prompt → build/test loop → levels → save codes → publish → trailer → launch on X). Use when someone says they want to make a game on Ryft, has a game idea but doesn't know where to begin, or asks "what should I do next" on a Ryft project.
 ---
 
 # Ryft Game Director
@@ -23,6 +23,7 @@ Ask at most one question to place them, then route:
 | Game is long enough that players need to resume | `ryft-password-save` | A **password/continue-code** system |
 | Game feels done | `ryft-publish-ready` | Pre-publish checklist + **title, description, tags** |
 | Wants a trailer, teaser, preview GIF or "made in N prompts" video | `ryft-trailer` | A **game-style trailer** (rendered with `/brag`) |
+| Wants to share, launch or market the game on X | `ryft-x-launch` | Card + feed check, a launch week of drafted posts, a campaign tracker |
 
 If the skill isn't installed, do that step yourself following the same intent.
 

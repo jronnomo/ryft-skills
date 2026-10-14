@@ -49,5 +49,5 @@ The trailer scripts in `ryft-trailer/scripts/` need ffmpeg. `npm test` covers `f
 
 ```bash
 npx playwright install chromium
-npm run test:record
+npm run test:browser
 ```

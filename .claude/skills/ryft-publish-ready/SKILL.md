@@ -28,6 +28,12 @@ A new player knows nothing. Go through this with the creator and turn every "no"
 - [ ] Winning shows a win screen. Players love a "thanks for playing"
 - [ ] If the game has password codes, they work after closing and reopening the tab
 
+**Plays inside an X post** (Ryft games play in X's 480×480 player card)
+- [ ] Run `node .claude/skills/ryft-x-launch/scripts/feed-check.mjs <game-url> out/` and read its advice
+- [ ] The game fills most of the square; text is readable on a phone
+- [ ] One tap starts; it works muted; a run fits in a minute or two
+- [ ] The cover art reads as a thumbnail (it's what people see before tapping)
+
 **Devices**
 - [ ] Works in at least two browsers
 - [ ] If touch is supported: playable on a phone, buttons are big enough, nothing hidden under the thumb
@@ -72,6 +78,7 @@ If the platform uses a screenshot or cover image, pick a moment **mid-action**, 
 
 Suggest the creator:
 - Watch someone play it, or read comments, and log what confuses people
+- Launch it on X with `ryft-x-launch`: the game link plays right inside the post.
 - Share it: the game's link works anywhere. Make a trailer or a looping preview with `ryft-trailer`, since a short gameplay clip is the best way to get people to click
 - Keep `GAME.md` for an update: the next version starts with `ryft-iterate`
 - If they change the password fields in an update, bump the version and tell players old codes won't work

@@ -1,47 +1,54 @@
 # Trailer: <Game Title>
 
-> This is a **video game trailer**, not a product launch. Follow this cut.
-> No feature cards, no claims, no SaaS language. Real gameplay from `clips/` is
-> the footage: at least 70% of the runtime. Never show anything the game doesn't do.
+> A **video game trailer**, not a product launch. Follow this cut and `references/trailer-craft.md`.
+> Real gameplay only. No feature cards, no claims, no lore cards.
 
 ## Format
-- Type: <teaser | gameplay trailer | loop | made in N prompts>
-- Aspect: <landscape 16:9 | vertical 9:16 | square>
-- Length: <seconds>
+- Type: <gameplay trailer | teaser | loop | made in N prompts>
+- Aspect / length: <16:9, 55 s> · Tempo: <120 BPM> (cuts on the beat grid)
+- Genre playbook row: <e.g. roguelike / deckbuilder>
 
-## The game in one line
-<Player> must <verb> to <goal> while <pressure>.
+## The plan
+- **Core verb (first 2 s):** <what the player does, and the source shot>
+- **Genre signal (by 5 s):** <the shot that makes the genre obvious>
+- **Hook (by 1/3):** <the unique mechanic; shown twice; how it's framed so it reads on a phone>
+- **Escalation layers:** <1 → 2 → 3, each bigger; areas/palettes for variety>
+- **Failure:** <a death / miss / near-miss>
+- **Payoff:** <the biggest moment, then silence>
 
-## The hook
-<The one moment that should be on screen in the first 2 seconds, and which clip shows it.>
-
-## The twist
-<What makes this game different, and which clip shows it most clearly.>
+## Cards (2–5 words, the game's voice and style)
+1. <genre / fantasy card, optional>
+2. <the hook, in plain words>
+3. <one more at most>
 
 ## Cut
 
-| Time | Beat | Clip | Text card (mood, in the game's voice) | Notes |
-|---|---|---|---|---|
-| 0–3s | Cold open | clips/01-...mp4 | none | no logo yet |
-| | The world | | "<line>" | |
-| | The twist | | "<line>" | |
-| | Escalation | | "<line>" | cuts get shorter |
-| | Big moment | | none | then silence/black |
-| | Title reveal | art/title.png | <Game Title> | |
-| | The button | | none | |
-| | End card | art/title.png over dimmed gameplay | "Play free on Ryft" + <link> | hold 2–3s; background must have no in-game text |
+| Time | Beat | Source (clip or snap, in-point, length) | Framing | Card | Sound cue |
+|---|---|---|---|---|---|
+| 0.0–2.0 | Open | | punch-in on the action | none | game SFX on the hit |
+| | Genre | | | | |
+| | Hook | | | | braam / riser |
+| | Hook again | | match cut | | |
+| | Build | | | | drums enter |
+| | Build | | | | |
+| | Climax | | | | music out 0.5–1.5 s before title |
+| | Title | art/cover | | | full hit |
+| | Button | | | | |
+| | End card | dimmed gameplay (no in-game text) | | Title / Play free on Ryft / link | resolve, hold 3 s |
 
 ## Look
-- Palette (from art-bible.md): <name #hex, ...>
-- Type: <font feel, e.g. chunky pixel font / clean rounded / hand-lettered>
-- Transitions: <hard cuts on the beat; flash or wipe matching the game's style>
-- Keep the game's pixels crisp: scale pixel art with nearest-neighbour, never blur it.
+- Palette (from the game / art bible): <hexes>
+- Type: <the game's own fonts or the closest match; cards styled like its UI>
+- Transitions: hard cuts by default; <2–4 named transitions and where>
+- Pixel art: integer zooms, nearest-neighbour; no grain or bloom on sprites
 
 ## Sound
-- Music: <genre and mood that fits the world, e.g. "chiptune, slow and eerie, builds to a fast arpeggio">
-- Build: quiet open → rising → drop at the big moment → silence → title hit
-- Game audio: <use the game's own SFX from the clips | clips are silent>
-- Not: upbeat corporate/stock "business" music
+- Score: <instruments/style that fit the world; BPM>
+- Game audio: <from audio/; which hits/sounds to feature; duck music under them>
+- Silence: <where>
+- Delivery: −14 LUFS, ≤ −1 dBTP
 
-## Share copy direction
-<The hook in the game's voice> + "Play free on Ryft: <link>". No "excited to share".
+## Grade (fill after rendering; ship at ≥ 16/20, no zeros)
+| Opening | Genre | Hook | Escalation | Readability | Text | Sound | Sync | Ending | Honesty | Total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | /20 |

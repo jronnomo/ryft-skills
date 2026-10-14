@@ -1,185 +1,154 @@
 ---
 name: ryft-trailer
-description: Makes video-game-style trailers, teasers, gameplay previews and "made in N prompts" build montages for Ryft games. Plans the shots like a game trailer editor, captures gameplay (human screen recording or a scripted browser recorder), cuts clips with ffmpeg, and packages a trailer kit that the /brag skill renders, steered away from product-launch style and toward game previews. Use when a creator wants a trailer, teaser, preview video, GIF, or footage to promote a game they're building or have published on Ryft.
+description: Makes video-game-style trailers, teasers, gameplay previews and "made in N prompts" build montages for Ryft games, following professional game-trailer craft (gameplay first, genre then hook then content, the game's own sound effects, readable shots, title last). Plans the cut by genre, captures gameplay (human recording, or a scripted browser recorder with the game's audio and 2x stills), cuts clips with ffmpeg, writes a trailer kit that /brag-slim renders, and self-grades against a rubric before delivery. Use when a creator wants a trailer, teaser, preview video, GIF, or footage to promote a game they're building or have published on Ryft.
 ---
 
 # Trailer
 
-Make the kind of video that sells a game: **gameplay first, escalating, ending on "Play now."** Not a product launch. Nobody wants feature cards and claims about a platformer. They want to see the jump.
+Make the kind of video that sells a game: **gameplay first, the hook early, escalation, title and "Play free on Ryft" last.** Not a product launch.
 
-The pipeline:
+**Read [`references/trailer-craft.md`](references/trailer-craft.md) before planning.** It holds the rules working trailer editors follow (Derek Lieu, Kert Gartner, Chris Zukowski, Valve), with numbers: structure, length by genre, text, sound, shots, transitions, genre playbooks, a self-grading rubric and QC.
 
 ```
-plan the cut → capture gameplay → cut clips → build trailer-kit/ → render with /brag → share
-  (this skill)   (creator or record.mjs)  (footage.mjs)  (TRAILER.md + PRODUCT.md)  (brag-slim)
+plan the cut → capture → find moments → build trailer-kit/ → render (/brag-slim) → grade → deliver
+  (genre playbook)  (record.mjs --audio --scale 2)  (footage.mjs)  (TRAILER.md)  (trailer-audio.mjs)  (rubric)
 ```
 
-`/brag` ([latent-spaces/brag](https://github.com/latent-spaces/brag)) is the renderer: motion, music, titles, encoding. This skill is the **director**. Brag's defaults are built for product launches (hook → reveal → feature highlights → punchline, upbeat business music), so everything here exists to override them with game-trailer grammar.
+`/brag-slim` ([latent-spaces/brag](https://github.com/latent-spaces/brag)) renders. This skill directs. Brag's defaults are product-launch shaped; `TRAILER.md` overrides them.
 
 ## 1. Pick the format
 
-| Format | Length | Shape | Use it for |
-|---|---|---|---|
-| **Teaser** | 10–15s, vertical 9:16 | one mechanic, one moment, title, "Play now" | TikTok, Shorts, Reels, "coming soon" |
-| **Gameplay trailer** | 30–45s, 16:9 | full escalation (below) | the main trailer, YouTube, Ryft listing, Discord |
-| **Loop** | 4–6s GIF/MP4, no text | the single best moment, loops cleanly | listing preview, README, chat |
-| **Made in N prompts** | 20–30s, either | build log: prompt 1 → finished game | showing off the creation process and Ryft itself |
-
-If they're unsure: a gameplay trailer for a published game, a teaser while it's still being built.
-
-## 2. Game trailer grammar
-
-These rules override brag's launch-video shape. Put them in `TRAILER.md` (template next to this file).
-
-- **Cold open on gameplay.** First frame is the game in motion, not a logo or a title card. The first 2 seconds should show the core verb.
-- **At least 70% real gameplay.** Every shot is real footage of the actual game. Never fake gameplay, mock UI, or show anything the game doesn't do.
-- **Escalate.** Calm → rising → chaos. Each beat bigger than the last: more enemies, faster cuts, bigger moments.
-- **Cut on the music.** Cuts land on beats. Shots get shorter as the trailer builds (2s → 1s → half-second flashes before the drop).
-- **Text is mood, not features.** 2–5 short cards in the game's voice: *"The forest is dark." "Your light is fading."* Never: "Features 7 levels!", "Intuitive controls", "Streamline".
-- **Show the twist.** The one thing that makes this game different gets its own clear, readable shot.
-- **Title reveal late.** Around 70–80% in, after the biggest moment, often with a hard cut to black or silence first.
-- **The button.** After the title, one last short gameplay moment (a joke, a near miss, a cliffhanger).
-- **End card:** logo/title + **"Play free on Ryft"** + the game's link. Hold it 2–3s.
-- **Sound is the game's.** Music fits the game's world: chiptune for pixel art, synthwave for neon, strings for a storybook, drums for action. Use the game's own sound effects when the recording has them. No corporate "happy business" beds.
-
-### Beat sheet: gameplay trailer (~40s)
-
-| Time | Beat | Shots |
+| Format | Length | Use it for |
 |---|---|---|
-| 0–3s | **Cold open** | the core verb, clean and readable |
-| 3–8s | **The world** | 1–2 atmosphere shots + mood card #1 |
-| 8–18s | **The twist** | the unique mechanic, shown clearly; mood card #2 |
-| 18–30s | **Escalation** | enemies, hazards, new areas, faster cuts; mood card #3 |
-| 30–33s | **The big moment** | boss, biggest jump, closest call; then a beat of silence |
-| 33–36s | **Title reveal** | logo / title |
-| 36–38s | **The button** | one last funny or tense moment |
-| 38–42s | **End card** | "Play free on Ryft" + link |
+| **Gameplay trailer** | by genre: arcade 30–45 s, action/roguelike/deckbuilder 45–75 s, puzzle/cozy/strategy/narrative 60–75 s | the main trailer, Ryft listing, YouTube, Discord |
+| **Teaser** | 10–20 s, vertical 9:16 | TikTok, Shorts, Reels |
+| **Loop** | 4–6 s, no text | listing preview, README, chat |
+| **Made in N prompts** | 20–30 s | showing the creation process and Ryft itself |
 
-Teaser: cold open (3s) → twist (5s) → title (3s) → end card (2s).
+## 2. Plan the cut (genre → hook → content)
 
-Made in N prompts: rough first build with "Prompt 1" → 4–6 fast before/after jumps through the log ("Prompt 4: it learned to glow") → finished gameplay at full speed → title → "Made in 11 prompts on Ryft" → end card. Captions come from the `GAME.md` prompt log; the build-log stills are the footage.
+Find the game's genre row in the playbook table (`references/trailer-craft.md` §7), then answer before touching footage:
 
-## 3. Shot list
+1. **Core verb:** what the player does, shown in the first 2 seconds.
+2. **Genre signal:** the shot that makes the genre obvious by 5 s.
+3. **Hook:** the one mechanic that breaks the formula. It lands by a third of the way in, isolated and readable, shown twice.
+4. **Escalation:** 3–5 layers, each bigger (enemies, areas, palettes, stakes). Save the flashiest for last.
+5. **Failure:** one death, miss or near-miss (it makes the game look skilful).
+6. **Payoff:** the biggest moment, then silence, then the title.
 
-Write the shot list before recording, so the creator knows what to capture. Pull from the concept card, the art bible and the level plan. Typical shots by genre:
+Default shape (scale to the length):
 
-- **Platformer:** first jump, longest jump, a near-miss over a hazard, enemy stomp, new world reveal, boss, the exit/goal
-- **Shooter:** first wave, screen full of bullets, power-up pickup, biggest explosion, boss pattern, last-second dodge
-- **Puzzle:** a clean "aha" solve, a chain reaction, a hard board before/after, a failure that's funny
-- **Runner:** speed-up moment, narrow escape, combo streak, the crash
-- **Top-down adventure:** exploring, finding an item, a fight, a secret, a new area, a boss door
-- **Always:** title screen, the twist mechanic, a win, a fail that's fun to watch
+| Share | Beat | Notes |
+|---|---|---|
+| 0–10% | **Open** | Core verb in motion, punched in so it reads on a phone. No logo, no lore. |
+| 10–35% | **Genre + hook** | One short genre/fantasy card max; the hook isolated, then shown again |
+| 35–75% | **Build** | One new layer per section; cut rate rises; contrasting areas |
+| 75–90% | **Climax** | Biggest moment or failure; music stops 0.5–1.5 s before the title |
+| 90–100% | **Title, button, end card** | Title; one last moment; "Play free on Ryft" + link held 3 s |
 
-## 4. Capture
+**Text cards** (§3 of the reference): 2–5 words, sell the fantasy or the hook in the game's voice ("EVERY CARD WEARS WITH USE"), plain words in fast montages. **Never lore** ("In a world…"), never feature bullets. Style them like the game's own UI. Each line fully visible ≥ 0.3 s/word (1.2 s minimum).
 
-**A. The creator records (best for gameplay).** A human playing looks alive in a way a script can't.
-- Mac: Cmd+Shift+5 → "Record Selected Portion" around the game. Note: this doesn't capture game audio. Use OBS (free, Mac/Windows) to get sound too.
-- Windows: Win+Alt+R (Xbox Game Bar) records the window with sound. OBS works too.
-- Make the game big (fullscreen or a large window), hide the mouse if it's not used, and record **several runs**. Good moments come from volume.
-- Record at 1080p or more and keep raw files. Don't edit or compress before cutting.
+## 3. Capture
 
-**B. The scripted recorder (menus, title screens, puzzles, build stills).** `scripts/record.mjs` opens the game in a headless browser, plays a list of inputs and records it:
+**Which capture fits the game:**
 
-```text
-wait 1
-snap title-screen
-click
-press Space
-hold ArrowRight 1.2
-hold ArrowRight+Space 0.4
-snap mid-jump
-```
+| Playstyle | Capture |
+|---|---|
+| Turn-based, card, puzzle, strategy, menus, idle, visual novel | Scripted recorder: plays whole runs reliably |
+| Real-time action, platformer, shooter, rhythm, racing | The creator records (A). The script can't react to the screen, so it dies or looks robotic. Use the recorder only for title screens, menus and stills. |
+| Any | `snap` stills at `--scale 2` for crisp punch-ins on characters, cards, UI |
+
+**A. The creator records (best for real-time action).** OBS (free) records the game with sound. Fullscreen, hide the mouse, record many runs. Keep game sound effects on; the game's music can be off.
+
+**B. The scripted recorder.** `scripts/record.mjs` plays the game in a headless browser from a list of inputs:
 
 ```bash
-node scripts/record.mjs "<game-url>" steps.txt raw/run1.mp4 --size 1920x1080
+node scripts/record.mjs "<game-url>" steps.txt raw/run.mp4 --size 1920x1124 --audio --scale 2
 ```
 
-It can't react to the screen, so action gameplay can look robotic. Tips from testing:
-- **Plan the script around the ending.** Many games restart on Space or Enter, so a script that keeps holding jump after the win screen appears will reset the game and cut the money shot short. End with a plain `wait` long enough for the win screen to play out.
-- **Use `snap` steps as checkpoints**, then look at them: they show at a glance whether the run survived.
-- **Quality:** scripted recordings come out around 1 Mbps, slightly softer than an OBS capture. Fine for social posts; for the hero trailer, a human OBS recording at full quality looks best. Use it for the "Made in N prompts" stills: run the same `snap` script against each build as it's made (or on the published link) and save them as `build-log/NN-prompt-N.png`. Shared Ryft game URLs open and play directly, so point it at the published link.
+- **`--audio`** records the game's own sound (Web Audio), synced to the picture within one frame by a clapperboard flash at the start (the first ~1 s of every `--audio` recording is that flash; cut it). Game SFX are the best percussion a trailer has.
+- **`--scale 2`** renders at 2× device pixels, so every `snap` still is twice as sharp. Use stills for punch-ins on cards, text and UI (video upscaling looks soft). Video stays at `--size`.
+- Steps: `wait s`, `click [x y]`, `press Key`, `hold Key[+Key] s`, `type text`, `snap name`.
 
-**C. During development**, remind the creator (via `ryft-iterate`) to grab a screenshot after each prompt. It's free footage for a build montage later.
+**Recording a published Ryft game:**
+- **Use the embed URL** `https://ryft.fun/embed/games/<id>` (the code before the slug: `gjgk90` in `/games/gjgk90-ashen-rite`).
+- Record at `--size 1920x1124` and crop Ryft's 44 px player bar: `ffmpeg -i raw.mp4 -vf crop=1920:1080:0:44 raw-crop.mp4`.
+- Start with `wait 20` (loading). `click` inside the game before any keys (it's an iframe). For `--audio`, also click Ryft's unmute button (`click 1679 21` at 1920 wide).
+- Read the game's controls first (F2). Keyboard shortcuts beat pixel clicks. Turn-based and card games script whole runs well.
+- `snap` liberally: every turn's hand, each character, each area. Stills are cheap and become the crispest shots.
+- Check the first snaps before trusting a long run (Ryft maintenance page, focus problems).
+- Don't keep pressing Space/Enter after a win or death screen if you need it on screen: many games restart on it.
 
-## 5. Cut the clips
+**C. During development**, `ryft-iterate` reminds the creator to screenshot after each prompt: footage for a "Made in N prompts" cut.
 
-`scripts/footage.mjs` (needs ffmpeg):
+## 4. Find the moments
+
+`scripts/footage.mjs` (ffmpeg):
 
 ```bash
-# 1. Contact sheet: a frame every 2s, 5 per row. Tile k is at 2*k seconds.
-node scripts/footage.mjs sheet raw/session.mov work/sheet.jpg --every 2
+node scripts/footage.mjs sheet raw/run-crop.mp4 work/sheet.jpg --every 4     # tile k = 4k seconds
+node scripts/footage.mjs sheet trailer-kit/clips/05-x.mp4 work/s.jpg --every 0.5  # pin an exact frame
+node scripts/footage.mjs cut raw/run-crop.mp4 cuts.txt trailer-kit             # clips + stills
+node scripts/footage.mjs gif trailer-kit/clips/01-x.mp4 trailer-kit/loop.gif --seconds 5
 ```
 
-Look at the sheet (it's an image you can read) to find the shot-list moments. To pin down an exact moment inside one clip, make a finer sheet of just that clip: `sheet clip.mp4 work/clip-sheet.jpg --every 0.5`. Then write `cuts.txt`:
+Read the sheets (they're images): find the core verb, the hook, every area/enemy, the failure, the biggest moment. Use the best 1%. A frozen frame that isn't instantly readable gets reframed or dropped.
 
-```text
-# start-end  name           (a few seconds of padding helps brag)
-0:04-0:09    cold-open-jump
-0:31-0:37    twist-light-shrinks
-1:12-1:16    gloomshroom-swarm
-2:40-2:47    boss
-```
+**Find the hits.** Sound onsets in the game audio are the most reliable marker of on-screen action (`ffmpeg -i game.wav -af "asetnsamples=n=2400,astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.Peak_level" -f null -` and look for jumps). If the game flashes characters on damage, colour spikes in the battle area (`signalstats` VAVG) confirm them. Put trailer impacts on the real hits, not just on the beat.
 
-```bash
-# 2. Cut: H.264 30fps clips + a still from each
-node scripts/footage.mjs cut raw/session.mov cuts.txt trailer-kit
+**Make every shot readable on a phone:**
+- Punch in on the action (crop the region, integer 2× zoom; nearest-neighbour for pixel art). Wide UI-heavy frames lose the viewer.
+- For cards and text, use the 2× `snap` stills with a slow push (5–10% over the shot).
+- Show a changing mechanic with a **match cut**: the same framing early and late (clean hand → worn hand).
+- Speed up slow, turn-based stretches (1.5–3×); cut out the thinking, keep the outcomes.
 
-# 3. Loop format: GIF from the best clip
-node scripts/footage.mjs gif trailer-kit/clips/01-cold-open-jump.mp4 trailer-kit/loop.gif --seconds 5
-```
-
-Check the stills: any clip that isn't instantly readable as a frozen frame gets re-cut or dropped.
-
-## 6. Build the trailer kit
-
-Create `trailer-kit/`. This is the "project" that `/brag` will read:
+## 5. Build the trailer kit
 
 ```
 trailer-kit/
-  TRAILER.md      the cut: format, beats, shots → clips, text cards, music, end card
+  TRAILER.md      the cut: beats → clips/stills (in-points, lengths), cards, transitions, sound cues
   PRODUCT.md      the game, in brag's PRODUCT.md format (register: game)
-  README.md       one-paragraph pitch + "Play free on Ryft: <link>"
-  clips/          gameplay clips from footage.mjs
-  stills/         one still per clip
-  art/            logo/title art, key art, hero sprite (exported from Ryft assets or screenshots)
-  build-log/      per-prompt screenshots (Made in N prompts only)
+  README.md       pitch + "Play free on Ryft: <link>"
+  clips/ stills/  from footage.mjs
+  snaps/          2× stills from record.mjs
+  audio/          the game's own audio from the recording
+  art/            cover art / logo (download the og:image from the game page)
 ```
 
-Watch for in-game text (win screens, "Level 2", tutorials) in shots that will sit under trailer text, especially the end card. Pick a background without it, or the two layers of text collide.
+Fill `TRAILER.md` and `PRODUCT.md` from `templates/`. Every beat names its source. Never invent a moment the footage doesn't show.
 
-Fill `TRAILER.md` and `PRODUCT.md` from the templates next to this file, using `GAME.md`, the art bible (exact palette hexes) and the listing from `ryft-publish-ready`. Every beat in `TRAILER.md` names the clip it uses. Never invent a moment the clips don't show.
+## 6. Render with /brag-slim
 
-## 7. Render with /brag
-
-Install once, if missing (Claude Code): `/plugin marketplace add latent-spaces/brag`, then `/plugin install brag@brag`. Requires Node 22+ and ffmpeg. `/brag-slim` builds everything itself, including a soundtrack written for the project, with no bundled business music, which is why it's the better fit for games. On Opus 5.5, `/brag` hands off to it automatically.
-
-From inside `trailer-kit/`:
+Install once: `/plugin marketplace add latent-spaces/brag`, `/plugin install brag@brag` (Node 22+, ffmpeg). From inside `trailer-kit/`:
 
 ```text
-/brag-slim --format landscape --duration 40 --tone "video game gameplay trailer: cold open on gameplay, escalating cuts on the beat, mood text cards, late title reveal, end card 'Play free on Ryft'. Follow TRAILER.md exactly. This is a game trailer, not a product launch: no feature cards, no claims, no SaaS language. Use the gameplay clips in clips/ as the footage, at least 70% of runtime. Music: <style from TRAILER.md>."
+/brag-slim --format landscape --duration <s> --tone "video game gameplay trailer per TRAILER.md and references/trailer-craft.md: gameplay in the first 2 s, genre then hook then content, plain short cards in the game's style, cuts on the beat, silence before the title, end card 'Play free on Ryft'. Not a product launch: no feature cards, no claims. Real gameplay is the footage. Mix the game's own SFX from audio/ into the score."
 ```
 
-Teaser: `--format vertical --duration 15`. Square loop for feeds: `--format square --duration 6`. Brag's own rules aim for 15–25s, so always pass `--duration` for a 30–45s trailer.
+**Or render it directly with `scripts/cut.mjs`** (what brag-slim does by hand, as one tested command). Write one `timeline.mjs` (shots back to back on the beat grid, cards, end card, flashes, the game's UI `STYLE`), score it, then:
 
-See [`examples/pip-and-the-gloomshrooms/trailer/`](../../../examples/pip-and-the-gloomshrooms/trailer/) for a complete run: the recorder steps, the cut list, the kit files and the finished 24s trailer.
+```bash
+node scripts/cut.mjs timeline.mjs trailer.mp4 --music music.wav
+```
 
-Review what brag returns against `TRAILER.md`:
-- Does it open on gameplay, not a title?
-- Is it mostly real footage?
-- Does the music fit the game's world?
-- Are the text cards mood lines, not features?
-- Does it end on "Play free on Ryft" + link?
+It renders every shot to an exact frame count (video with crops/dim/blur, stills with push-ins, black), draws the cards and end card, mixes, and prints a QC report (frames, unplanned black, frozen picture, flashes per second, LUFS, true peak), failing if anything is out of spec. One timeline driving picture, text and sound is what keeps everything in sync. See `examples/` for timelines.
 
-Ask brag to re-roll any scene that drifts toward launch-video style.
+**Sound:** build the score with `scripts/trailer-audio.mjs` (organ, choir, strings, bells, chiptune plucks, drums, braams, risers, whooshes, booms, sub drops, the game's audio placed per clip, ducking, real silence, −14 LUFS master). Pick a BPM with whole frames per beat (90, 100, 120, 150). Put on-screen hits on SFX cues, duck the music under them, and stop the music before the title.
 
-**Without brag:** deliver `loop.gif`, the clips, and the stills. They're still useful for the listing and social posts. Or open the clips in any editor (CapCut, iMovie, DaVinci Resolve) with `TRAILER.md` as the edit plan.
+Teaser: `--format vertical --duration 15` (reframe per §8 of the reference). Loop: `--format square --duration 6`.
 
-## 8. Share
+## 7. Grade, then deliver
 
-Brag writes `share-copy.txt`. Make sure it reads like a game post: the hook in the game's voice, then "Play free on Ryft: <link>". Plan more than one post: the teaser while building, the trailer at launch, the "Made in N prompts" cut a few days later for a second wave, and the loop GIF anywhere a link preview shows.
+Score the render with the rubric in `references/trailer-craft.md` §9 (opening, genre clarity, hook timing, escalation, readability, text, sound, sync, ending, honesty). **Ship at ≥ 16/20, with no zeros**; otherwise fix the lowest scores and re-render. Run the QC list (§10): black/freeze detection, loudness, flashes, a muted look on a phone-sized frame.
+
+Deliver the video, the poster frame (also baked in as frame 0), `share-copy.txt` (the hook in the game's voice + "Play free on Ryft: <link>"), and the grade.
+
+**Without brag:** deliver `loop.gif`, clips and stills, with `TRAILER.md` as the edit plan for any editor.
 
 ## Rules
 
-- Ryft allows recording and sharing gameplay, so post freely. When a trailer or montage features someone else's Ryft game, credit the creator by name and link their game.
-- Music: brag-slim's generated score, the game's own audio, or a track the creator has rights to. Nothing ripped from other games or songs.
-- Show the game as it is. A trailer that oversells gets bad comments.
+- Ryft allows recording and sharing gameplay. When featuring someone else's Ryft game, credit the creator and link it.
+- Music: the generated score, the game's own audio, or a track the creator has rights to. Nothing ripped.
+- Show the game as it is. No mock-ups, no moments that didn't happen.
+
+Examples: [`examples/pip-and-the-gloomshrooms/trailer/`](../../../examples/pip-and-the-gloomshrooms/trailer/).

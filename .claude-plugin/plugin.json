@@ -1,0 +1,11 @@
+{
+  "name": "ryft-skills",
+  "description": "Open-source toolkit for Ryft creators: turn an idea into a game, make it play great inside X posts, cut real-gameplay trailers, and launch and track it on X.",
+  "version": "0.3.0",
+  "author": { "name": "Ryft Skills contributors" },
+  "license": "MIT",
+  "homepage": "https://github.com/jronnomo/ryft-skills",
+  "repository": "https://github.com/jronnomo/ryft-skills",
+  "keywords": ["ryft", "game-development", "trailers", "x", "marketing", "skills"],
+  "skills": "./.claude/skills/"
+}
